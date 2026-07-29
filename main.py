@@ -7,13 +7,13 @@ TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 
 # 2. 조회 설정
-DEP_STATION = "포항"       # 출발역 (예: 서울, 용산, 대전, 동대구 등)
-ARR_STATION = "천안아산"       # 도착역 (예: 부산, 광주송정, 여수엑스포 등)
-TRAIN_DATE = "20260817"   # 탑승 날짜 (YYYYMMDD)
+DEP_STATION = "포항"         # 출발역
+ARR_STATION = "천안아산"     # 도착역
+TRAIN_DATE = "20260817"     # 탑승 날짜 (YYYYMMDD)
 
-# 🕒 감시할 시간대 범위 설정 (시:분 24시간제)
-START_TIME = "14:00"      # 조회 시작 시간 (예: 오전 8시부터)
-END_TIME = "15:00"        # 조회 종료 시간 (예: 오후 2시까지)
+# 🕒 감시할 시간대 범위 설정 (24시간제 HH:MM)
+START_TIME = "14:00"        # 조회 시작 시간
+END_TIME = "15:00"          # 조회 종료 시간
 
 def send_telegram_msg(message):
     """텔레그램 메시지 발송 함수"""
@@ -32,12 +32,13 @@ def send_telegram_msg(message):
 
 def check_ktx_seats():
     try:
-        korail = Korail2()
+        # 👈 여기도 Korail()로 수정되어야 정상 작동합니다.
+        korail = Korail()
         
         # 코레일 API용 시작 시간 형식 변환 (HHMMSS)
         start_hhmmss = START_TIME.replace(":", "") + "00"
         
-        # 열차 검색 (시작 시간 이후 열차들을 불러옴)
+        # 열차 검색
         trains = korail.search_train(
             dep=DEP_STATION,
             arr=ARR_STATION,
@@ -54,7 +55,7 @@ def check_ktx_seats():
             dep_time_str = f"{train.dep_time[:2]}:{train.dep_time[2:4]}"
             arr_time_str = f"{train.arr_time[:2]}:{train.arr_time[2:4]}"
 
-            # 🕒 [핵심 추가] 설정한 종료 시간(END_TIME)을 넘어가는 열차는 필터링하여 제외
+            # 설정한 종료 시간(END_TIME)을 넘어가는 열차는 필터링
             if dep_time_str > END_TIME:
                 continue
 
