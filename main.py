@@ -2,9 +2,11 @@ import os
 import requests
 from korail2 import Korail
 
-# 1. 환경 변수에서 텔레그램 설정 가져오기
+# 1. 환경 변수에서 Secrets 정보 가져오기
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
+KORAIL_ID = os.environ.get("KORAIL_ID")
+KORAIL_PW = os.environ.get("KORAIL_PW")
 
 # 2. 조회 설정
 DEP_STATION = "포항"         # 출발역
@@ -32,8 +34,8 @@ def send_telegram_msg(message):
 
 def check_ktx_seats():
     try:
-        # 👈 여기도 Korail()로 수정되어야 정상 작동합니다.
-        korail = Korail()
+        # 코레일 로그인 진행
+        korail = Korail(KORAIL_ID, KORAIL_PW)
         
         # 코레일 API용 시작 시간 형식 변환 (HHMMSS)
         start_hhmmss = START_TIME.replace(":", "") + "00"
@@ -83,8 +85,8 @@ def check_ktx_seats():
         return []
 
 def main():
-    if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
-        print("에러: TELEGRAM_TOKEN 또는 TELEGRAM_CHAT_ID가 설정되어 있지 않습니다.")
+    if not all([TELEGRAM_TOKEN, TELEGRAM_CHAT_ID, KORAIL_ID, KORAIL_PW]):
+        print("에러: GitHub Secrets에 필요한 설정(TELEGRAM_TOKEN, TELEGRAM_CHAT_ID, KORAIL_ID, KORAIL_PW)이 누락되었습니다.")
         return
 
     print(f"[{DEP_STATION} ➔ {ARR_STATION} / {TRAIN_DATE} ({START_TIME}~{END_TIME})] KTX 취소표 감시 시작...")
