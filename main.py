@@ -1,6 +1,6 @@
 import os
 import requests
-from korail2 import Korail2
+from korail2 import Korail
 
 # 1. 환경 변수에서 텔레그램 설정 가져오기
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
