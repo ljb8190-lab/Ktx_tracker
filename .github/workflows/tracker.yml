@@ -2,10 +2,10 @@ name: KTX Seat Tracker
 
 on:
   schedule:
-    # UTC 기준 (15분마다 감시하고 싶을 때: '*/15 * * * *')
-    # 아래 설정은 30분마다 자동 실행하도록 설정 예시
-    - cron: '*/10 * * * *'
-  workflow_dispatch:
+    # UTC 기준 (한국 시간 = UTC + 9시간)
+    # 아래 설정은 30분마다 자동으로 실행하여 취소표 감시
+    - cron: '*/30 * * * *'
+  workflow_dispatch: # 수동 실행 버튼 활성화
 
 jobs:
   track:
@@ -27,4 +27,6 @@ jobs:
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          KORAIL_ID: ${{ secrets.KORAIL_ID }}
+          KORAIL_PW: ${{ secrets.KORAIL_PW }}
         run: python main.py
